@@ -6,7 +6,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/ml/ml.hpp>
 
-#include "image_loader.h"
+#include "fourier_loader.h"
 
 using namespace std;
 using namespace cv;

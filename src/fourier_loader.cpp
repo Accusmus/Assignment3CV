@@ -1,4 +1,4 @@
-#include "image_loader.h"
+#include "fourier_loader.h"
 
 image_loader::image_loader()
 {
