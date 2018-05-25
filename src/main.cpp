@@ -5,13 +5,16 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/ml/ml.hpp>
 
+#include "image_loader.h"
+
 using namespace std;
 using namespace cv;
 using namespace cv::ml;
 
+#define PI 3.14159265359
 
 vector<vector<Point> > getContour(Mat &src);
-void ellipticFourierDescriptors(vector<Point> &contour, vector<float> CE);
+void ellipticFourierDescriptors(vector<Point> &contour, vector<float> &CE);
 
 
 int main(int argc, char **argv)
@@ -23,31 +26,66 @@ int main(int argc, char **argv)
 
         //Define image matrices
         Mat image;
-        Mat drawing;
 
         //create windows for displaying
         namedWindow("original", 0);
         namedWindow("contours", 0);
 
-        //read in image as arguement
-        image = imread(argv[1], CV_8UC1);
-        if(image.data == NULL){
-            cout << "ERROR: Could not read file" << endl;
-            return 1;
+        vector<vector<vector<Mat> > > images;
+        vector<vector<vector<Mat> > > drawings;
+        vector<vector<vector<vector<float> > > >fourier;
+
+        image_loader loader = image_loader();
+        loader.readFiles(images);
+
+        for(size_t i = 0; i < images.size(); i++){ // for each hand num (folder)
+            vector<vector<Mat> > folder;
+            drawings.push_back(folder);
+            vector<vector<vector<float> > > ceFolder;
+            fourier.push_back(ceFolder);
+
+            for(size_t j = 0; j < images[i].size(); j++){ //for each hand sign
+                vector<Mat> hand;
+                drawings[i].push_back(hand);
+                vector<vector<float> >ceHand;
+                fourier[i].push_back(ceHand);
+
+                for(size_t k = 0; k < images[i][j].size(); k++){ //for each image
+                    resize(images[i][j][k], images[i][j][k], Size(640, 480), 0, 0, INTER_LINEAR);
+                    drawings[i][j].push_back(Mat::zeros(images[i][j][k].size(), CV_8UC3));
+
+
+                    vector<vector<Point> > contour = getContour(images[i][j][k]);
+
+                    Scalar color = CV_RGB(0, 255, 0);
+                    drawContours(drawings[i][j][k], contour, 0, color, 1, 8);
+
+                    vector<float> ceImage;
+                    fourier[i][j].push_back(ceImage);
+                    ellipticFourierDescriptors(contour[0], fourier[i][j][k]);
+                }
+            }
+            cout << "Descriptors for hand " << i << " calculated" << endl;
         }
-        //Resize to be the recommended size
-        resize(image, image, Size(640, 480), 0, 0, INTER_LINEAR);
 
-        drawing = Mat::zeros(image.size(), CV_8UC3);
-
-        vector<vector<Point> > contour = getContour(image);
-
-        Scalar color = CV_RGB(0, 255, 0);
-        drawContours(drawing, contour, 0, color, 1, 8);
+        int folder = 0;
+        int gesture =0;
+        //int image = 0;
+        for(int z = 0; z < fourier.size(); z++){
+            for(int y = 0; y < fourier[z][gesture].size(); y++){
+                for(int x = 0; x < fourier[z][gesture][y].size(); x++){
+                    //cout << fourier[0][0].size() << endl;
+                    cout << fourier[z][gesture][y][x] << " ";
+                }
+                cout << endl;
+            }
+            cout << endl;
+        }
 
         //Show Images
-        imshow("original", image);
-        imshow("contours", drawing);
+        imshow("original", images[4][9][4]);
+        imshow("contours", drawings[4][9][4]);
+
 
         waitKey(0);
         return 0;
@@ -84,7 +122,34 @@ vector<vector<Point> > getContour(Mat &src){
         return ret;
 }
 
-void ellipticFourierDescriptors(vector<Point> &contour, vector<float> CE){
-    //TODO
+void ellipticFourierDescriptors(vector<Point> &contour, vector<float> &CE){
+    vector<float> ax, ay, bx, by;
+    int m = contour.size();
+    int n = 10;
+    float t = (2*PI)/m;
 
+    for(int k = 0; k < n; k++){
+        ax.push_back(0.0);
+        ay.push_back(0.0);
+        bx.push_back(0.0);
+        by.push_back(0.0);
+
+        for(int i = 0; i < m; i++){
+            ax[k] = ax[k] + contour[i].x * cos((k+1) * t * (i));
+            bx[k] = bx[k] + contour[i].x * sin((k+1) * t * (i));
+            ay[k] = ay[k] + contour[i].y * cos((k+1) * t * (i));
+            by[k] = by[k] + contour[i].y * sin((k+1) * t * (i));
+        }
+        ax[k] = (ax[k]) / m;
+        bx[k] = (bx[k]) / m;
+        ay[k] = (ay[k]) / m;
+        by[k] = (by[k]) / m;
+    }
+    for(int k = 0; k < n; k++){
+        CE.push_back(sqrt((ax[k]*ax[k]+ay[k]*ay[k])/(ax[0]*ax[0]+ay[0]*ay[0]))+
+                        sqrt((bx[k]*bx[k]+by[k]*by[k])/(bx[0]*bx[0]+by[0]*by[0])) );
+    }
+//    for(int count=0; count<n && count < CE.size(); count++){
+//        cout << count << " CE " << CE[count] << " ax " << ax[count] << " ay " << ay[count] << " bx " << bx[count] << " by " << by[count] << endl;
+//    }
 }
