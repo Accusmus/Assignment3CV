@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
@@ -68,20 +69,39 @@ int main(int argc, char **argv)
             cout << "Descriptors for hand " << i << " calculated" << endl;
         }
 
-        int folder = 0;
-        int gesture =0;
-        //int image = 0;
-        for(int z = 0; z < fourier.size(); z++){
-            for(int y = 0; y < fourier[z][gesture].size(); y++){
-                for(int x = 0; x < fourier[z][gesture][y].size(); x++){
-                    //cout << fourier[0][0].size() << endl;
-                    cout << fourier[z][gesture][y][x] << " ";
+        ofstream myfile;
+        myfile.open("descriptor.txt");
+        //myfile << "writing to file\n" << endl;
+        for(size_t folder = 0; folder < fourier.size(); folder++){
+            for(size_t gesture = 0; gesture < fourier[folder].size(); gesture++){
+                for(size_t imgNum = 0; imgNum < fourier[folder][gesture].size(); imgNum++){
+                    for(size_t dscrpt = 0; dscrpt < fourier[folder][gesture][imgNum].size(); dscrpt++){
+                        if(dscrpt == 0){
+                            myfile << gesture << ",";
+                        }else if(dscrpt != fourier[folder][gesture][imgNum].size() - 1){
+                            myfile << fourier[folder][gesture][imgNum][dscrpt] << ",";
+                        }else{
+                            myfile << fourier[folder][gesture][imgNum][dscrpt] << endl;
+                        }
+                    }
                 }
-                cout << endl;
             }
-            cout << endl;
         }
+//        int folder = 0;
+//        int gesture =0;
+//        //int image = 0;
+//        for(int z = 0; z < fourier.size(); z++){
+//            for(int y = 0; y < fourier[z][gesture].size(); y++){
+//                for(int x = 0; x < fourier[z][gesture][y].size(); x++){
+//                    //cout << fourier[0][0].size() << endl;
+//                    cout << fourier[z][gesture][y][x] << " ";
+//                }
+//                cout << endl;
+//            }
+//            cout << endl;
+//        }
 
+        myfile.close();
         //Show Images
         imshow("original", images[4][9][4]);
         imshow("contours", drawings[4][9][4]);
