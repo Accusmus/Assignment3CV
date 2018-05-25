@@ -52,7 +52,26 @@ void fourier_loader::readFiles(){
     }
 }
 
-void fourier_loader::getFourierDescriptor(){
+vector<float> fourier_loader::getSingleFourierDescriptor(Mat &src, Mat &drawing){
+    resize(src, src, Size(640, 480), 0, 0, INTER_LINEAR);
+    drawing = Mat::zeros(src.size(), CV_8UC3);
+    //apply a median blur to smooth image
+    medianBlur(src, src, 9);
+    //apply threshold
+    threshold(src, src, 5, 255, CV_THRESH_BINARY);
+
+    vector<vector<Point> > contour = getContour(src);
+
+    Scalar color = CV_RGB(0, 255, 0);
+    drawContours(drawing, contour, 0, color, 1, 8);
+
+    vector<float> fourier;
+    ellipticFourierDescriptors(contour[0], fourier);
+
+    return fourier;
+}
+
+void fourier_loader::getBulkFourierDescriptor(){
     //takes images and returns fourier descriptors
     for(size_t i = 0; i < images.size(); i++){ // for each hand num (folder)
         vector<vector<Mat> > folder;
@@ -122,7 +141,7 @@ vector<vector<Point> > fourier_loader::getContour(Mat &src){
         int largestcontour = 0;
         long int largestsize = 0;
 
-        for(int i = 0; i < contours.size(); i++){
+        for(size_t i = 0; i < contours.size(); i++){
             if(largestsize < contours[i].size()){
                 largestsize = contours[i].size();
                 largestcontour = i;
@@ -160,7 +179,7 @@ void fourier_loader::ellipticFourierDescriptors(vector<Point> &contour, vector<f
         CE.push_back(sqrt((ax[k]*ax[k]+ay[k]*ay[k])/(ax[0]*ax[0]+ay[0]*ay[0]))+
                         sqrt((bx[k]*bx[k]+by[k]*by[k])/(bx[0]*bx[0]+by[0]*by[0])) );
     }
-//    for(int count=0; count<n && count < CE.size(); count++){
+//    for(size_t count=0; count<n && count < CE.size(); count++){
 //        cout << count << " CE " << CE[count] << " ax " << ax[count] << " ay " << ay[count] << " bx " << bx[count] << " by " << by[count] << endl;
 //    }
 }

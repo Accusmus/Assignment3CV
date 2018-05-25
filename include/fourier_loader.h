@@ -21,7 +21,8 @@ class fourier_loader
         virtual ~fourier_loader();
 
         void readFiles();
-        void getFourierDescriptor();
+        void getBulkFourierDescriptor();
+        vector<float> getSingleFourierDescriptor(Mat &src, Mat &drawing);
         void writeDescriptorToFile(string filename);
 
         void getImages(vector<vector<vector<Mat> > > &imgs);
