@@ -76,6 +76,7 @@ int main(int argc, char **argv)
             for(size_t gesture = 0; gesture < fourier[folder].size(); gesture++){
                 for(size_t imgNum = 0; imgNum < fourier[folder][gesture].size(); imgNum++){
                     for(size_t dscrpt = 0; dscrpt < fourier[folder][gesture][imgNum].size(); dscrpt++){
+                        cout << " size " << fourier[folder][gesture][imgNum].size() << endl;
                         if(dscrpt == 0){
                             myfile << gesture << ",";
                         }else if(dscrpt != fourier[folder][gesture][imgNum].size() - 1){
@@ -145,7 +146,7 @@ vector<vector<Point> > getContour(Mat &src){
 void ellipticFourierDescriptors(vector<Point> &contour, vector<float> &CE){
     vector<float> ax, ay, bx, by;
     int m = contour.size();
-    int n = 10;
+    int n = 30;
     float t = (2*PI)/m;
 
     for(int k = 0; k < n; k++){

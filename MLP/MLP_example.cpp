@@ -171,7 +171,7 @@ build_mlp_classifier( const string& data_filename,
     Mat data;
     Mat responses;
 
-    bool ok = read_num_class_data( data_filename, 9, &data, &responses );//third parameter: FEATURES
+    bool ok = read_num_class_data( data_filename, 29, &data, &responses );//third parameter: FEATURES
     if( !ok )
         return ok;
 
@@ -213,7 +213,7 @@ build_mlp_classifier( const string& data_filename,
         }
 
         // 2. train classifier
-        int layer_sz[] = { data.cols, 100, 100, class_count };
+        int layer_sz[] = { data.cols, 500, 500, class_count };
 	cout <<  " sizeof layer_sz " << sizeof(layer_sz) << " sizeof layer_sz[0]) " << sizeof(layer_sz[0]) << endl;
         int nlayers = (int)(sizeof(layer_sz)/sizeof(layer_sz[0]));
 	cout << " nlayers  " << nlayers << endl;
@@ -275,4 +275,5 @@ int main( int argc, char *argv[] )
         }
     }
     build_mlp_classifier( data_filename, filename_to_save, filename_to_load );
+    cout << "end of main" << endl;
 }
