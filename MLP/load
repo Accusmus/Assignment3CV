@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./MLP_example -load example.xml -data descriptor.txt
