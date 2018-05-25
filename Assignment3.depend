@@ -1,12 +1,13 @@
 # depslib dependency file v1.0
-1527213748 source:/home/matthew/Documents/Uni/Computer Vision/Assignment3/src/main.cpp
+1527227970 source:/home/matthew/Documents/Uni/Computer Vision/Assignment3/src/main.cpp
 	<iostream>
+	<fstream>
 	<string>
 	<opencv2/opencv.hpp>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/ml/ml.hpp>
-	"image_loader.h"
+	"fourier_loader.h"
 
 1520452645 /usr/local/include/opencv2/core/core.hpp
 	"opencv2/core.hpp"
@@ -808,4 +809,14 @@
 
 1520452645 /usr/local/include/opencv2/ml/ml.hpp
 	"opencv2/ml.hpp"
+
+1527228343 source:/home/matthew/Documents/Uni/Computer Vision/Assignment3/src/fourier_loader.cpp
+	"fourier_loader.h"
+
+1527228236 /home/matthew/Documents/Uni/Computer Vision/Assignment3/include/fourier_loader.h
+	<vector>
+	<string>
+	<fstream>
+	<opencv2/opencv.hpp>
+	<opencv2/core/core.hpp>
 

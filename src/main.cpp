@@ -25,12 +25,9 @@ int main(int argc, char **argv)
         namedWindow("original", 0);
         namedWindow("contours", 0);
 
-//        vector<vector<vector<Mat> > > images;
-//        vector<vector<vector<Mat> > > drawings;
-//        vector<vector<vector<vector<float> > > >fourier;
 
         string filename = "descriptor.txt";
-        image_loader loader = image_loader();
+        fourier_loader loader = fourier_loader();
         loader.readFiles();
         loader.getFourierDescriptor();
         loader.writeDescriptorToFile(filename);

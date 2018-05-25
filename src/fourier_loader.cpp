@@ -1,11 +1,11 @@
 #include "fourier_loader.h"
 
-image_loader::image_loader()
+fourier_loader::fourier_loader()
 {
 
 }
 
-image_loader::~image_loader()
+fourier_loader::~fourier_loader()
 {
     //dtor
 }
@@ -23,7 +23,7 @@ static const string handtypes[] = {
 };
 
 //initialises and reads all files to vector of vectors of mats
-void image_loader::readFiles(){
+void fourier_loader::readFiles(){
     vector<String> filenames;
 
     for(size_t foldernum = 0; foldernum < 5; foldernum++){
@@ -52,7 +52,7 @@ void image_loader::readFiles(){
     }
 }
 
-void image_loader::getFourierDescriptor(){
+void fourier_loader::getFourierDescriptor(){
     //takes images and returns fourier descriptors
     for(size_t i = 0; i < images.size(); i++){ // for each hand num (folder)
         vector<vector<Mat> > folder;
@@ -85,7 +85,7 @@ void image_loader::getFourierDescriptor(){
     }
 }
 
-void image_loader::writeDescriptorToFile(string filename){
+void fourier_loader::writeDescriptorToFile(string filename){
     ofstream myfile;
     myfile.open(filename);
 
@@ -109,7 +109,7 @@ void image_loader::writeDescriptorToFile(string filename){
     myfile.close();
 }
 
-vector<vector<Point> > image_loader::getContour(Mat &src){
+vector<vector<Point> > fourier_loader::getContour(Mat &src){
         //apply a median blur to smooth image
         medianBlur(src, src, 9);
         //apply threshold
@@ -133,7 +133,7 @@ vector<vector<Point> > image_loader::getContour(Mat &src){
         return ret;
 }
 
-void image_loader::ellipticFourierDescriptors(vector<Point> &contour, vector<float> &CE){
+void fourier_loader::ellipticFourierDescriptors(vector<Point> &contour, vector<float> &CE){
     vector<float> ax, ay, bx, by;
     int m = contour.size();
     int n = 30;
@@ -165,10 +165,10 @@ void image_loader::ellipticFourierDescriptors(vector<Point> &contour, vector<flo
 //    }
 }
 
-void image_loader::getImages(vector<vector<vector<Mat> > > &imgs){
+void fourier_loader::getImages(vector<vector<vector<Mat> > > &imgs){
     imgs = images;
 }
 
-void image_loader::getContourImages(vector<vector<vector<Mat> > > &contourImg){
+void fourier_loader::getContourImages(vector<vector<vector<Mat> > > &contourImg){
     contourImg = drawings;
 }

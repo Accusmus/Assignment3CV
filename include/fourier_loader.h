@@ -1,5 +1,5 @@
-#ifndef IMAGE_LOADER_H
-#define IMAGE_LOADER_H
+#ifndef FOURIER_LOADER_H
+#define FOURIER_LOADER_H
 
 #include<vector>
 #include <string>
@@ -14,11 +14,11 @@ using namespace std;
 using namespace cv;
 
 
-class image_loader
+class fourier_loader
 {
     public:
-        image_loader();
-        virtual ~image_loader();
+        fourier_loader();
+        virtual ~fourier_loader();
 
         void readFiles();
         void getFourierDescriptor();
@@ -38,4 +38,4 @@ class image_loader
         void ellipticFourierDescriptors(vector<Point> &contour, vector<float> &CE);
 };
 
-#endif // IMAGE_LOADER_H
+#endif // fOURIER_LOADER_H
