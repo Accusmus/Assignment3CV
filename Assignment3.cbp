@@ -14,6 +14,7 @@
 				<Option parameters="res/part1/hand1_0_bot_seg_1_cropped.png" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -23,6 +24,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -38,6 +40,7 @@
 			<Add option="`pkg-config --libs --cflags opencv`" />
 		</Linker>
 		<Unit filename="include/fourier_loader.h" />
+		<Unit filename="include/mlp_classifier.h" />
 		<Unit filename="res/part1/hand1_0_bot_seg_1_cropped.png" />
 		<Unit filename="res/part1/hand1_0_bot_seg_2_cropped.png" />
 		<Unit filename="res/part1/hand1_0_bot_seg_3_cropped.png" />
@@ -2555,6 +2558,7 @@
 		<Unit filename="res/part5/hand5_z_dif_seg_5_cropped.png" />
 		<Unit filename="src/fourier_loader.cpp" />
 		<Unit filename="src/main.cpp" />
+		<Unit filename="src/mlp_classifier.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

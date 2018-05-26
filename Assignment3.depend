@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1527245494 source:/home/matthew/Documents/Uni/Computer Vision/Assignment3/src/main.cpp
+1527298239 source:/home/matthew/Documents/Uni/Computer Vision/Assignment3/src/main.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -8,6 +8,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/ml/ml.hpp>
 	"fourier_loader.h"
+	"mlp_classifier.h"
 
 1520452645 /usr/local/include/opencv2/core/core.hpp
 	"opencv2/core.hpp"
@@ -810,7 +811,7 @@
 1520452645 /usr/local/include/opencv2/ml/ml.hpp
 	"opencv2/ml.hpp"
 
-1527245564 source:/home/matthew/Documents/Uni/Computer Vision/Assignment3/src/fourier_loader.cpp
+1527292939 source:/home/matthew/Documents/Uni/Computer Vision/Assignment3/src/fourier_loader.cpp
 	"fourier_loader.h"
 
 1527245410 /home/matthew/Documents/Uni/Computer Vision/Assignment3/include/fourier_loader.h
@@ -819,4 +820,13 @@
 	<fstream>
 	<opencv2/opencv.hpp>
 	<opencv2/core/core.hpp>
+
+1527298664 source:/home/matthew/Documents/Uni/Computer Vision/Assignment3/src/mlp_classifier.cpp
+	"mlp_classifier.h"
+
+1527298785 /home/matthew/Documents/Uni/Computer Vision/Assignment3/include/mlp_classifier.h
+	<opencv2/core/core.hpp>
+	<opencv2/ml/ml.hpp>
+	<vector>
+	<iostream>
 

@@ -155,7 +155,7 @@ vector<vector<Point> > fourier_loader::getContour(Mat &src){
 void fourier_loader::ellipticFourierDescriptors(vector<Point> &contour, vector<float> &CE){
     vector<float> ax, ay, bx, by;
     int m = contour.size();
-    int n = 30;
+    int n = 10;
     float t = (2*PI)/m;
 
     for(int k = 0; k < n; k++){

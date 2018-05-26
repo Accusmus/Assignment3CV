@@ -171,7 +171,7 @@ build_mlp_classifier( const string& data_filename,
     Mat data;
     Mat responses;
 
-    bool ok = read_num_class_data( data_filename, 29, &data, &responses );//third parameter: FEATURES
+    bool ok = read_num_class_data( data_filename, 9, &data, &responses );//third parameter: FEATURES
     if( !ok )
         return ok;
 
@@ -275,5 +275,4 @@ int main( int argc, char *argv[] )
         }
     }
     build_mlp_classifier( data_filename, filename_to_save, filename_to_load );
-    cout << "end of main" << endl;
 }

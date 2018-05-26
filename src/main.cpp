@@ -7,6 +7,7 @@
 #include <opencv2/ml/ml.hpp>
 
 #include "fourier_loader.h"
+#include "mlp_classifier.h"
 
 using namespace std;
 using namespace cv;
@@ -29,18 +30,20 @@ int main(int argc, char **argv)
         image = imread(argv[1], CV_8UC1);
 
 
-        string filename = "descriptor.txt";
+        string data = "res/classifier/descriptor.txt";
+        string save = "res/classifier/example.xml";
+        string load = "res/classifier/example.xml";
         fourier_loader loader = fourier_loader();
 
         vector<float> fourier = loader.getSingleFourierDescriptor(image, drawing);
-        for(size_t i = 0; i < fourier.size(); i++){
-            cout << fourier[i] << " ";
-        }
-        cout << endl;
+
+        Mat sample1 = (Mat_<float>(1,9) << fourier[1],fourier[2],fourier[3],fourier[4], fourier[5],fourier[6],fourier[7], fourier[8], fourier[9]);//6
+        mlp_classifier classifier = mlp_classifier(data, save, load);
+        classifier.getClassifierResult(sample1);
 
 // -------Load all files and create a descriptor file
 //        loader.readFiles();
-//        loader.getFourierDescriptor();
+//        loader.getBulkFourierDescriptor();
 //        loader.writeDescriptorToFile(filename);
 //
 //        vector<vector<vector<Mat> > > imgs;
