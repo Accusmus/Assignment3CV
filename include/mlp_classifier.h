@@ -18,7 +18,7 @@ class mlp_classifier
         mlp_classifier(string data, string save, string load);
         virtual ~mlp_classifier();
 
-        void getClassifierResult(Mat &sample);
+        float getClassifierResult(Mat &sample);
 
     protected:
 

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./MLP_example -save example.xml -data descriptor.txt
+./MLP_example -save example2.xml -data descriptor2.txt

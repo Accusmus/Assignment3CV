@@ -160,7 +160,6 @@ static float classifier_predict(string filename_to_load, Mat &sample)
         //ntrain_samples = 0;
 
     float r = model->predict( sample );
-    cout << "Prediction: " << r << endl;
 
     return r;
 }
@@ -253,10 +252,10 @@ build_mlp_classifier( const string& data_filename,
     return true;
 }
 
-void mlp_classifier::getClassifierResult(Mat &sample){
+float mlp_classifier::getClassifierResult(Mat &sample){
 
     float p;
 
     p = classifier_predict(filename_to_load, sample);
-    cout << "p: " << p << endl;
+    return p;
 }
