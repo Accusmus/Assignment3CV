@@ -58,7 +58,7 @@ vector<float> fourier_loader::getSingleFourierDescriptor(Mat &src, Mat &drawing)
     //apply a median blur to smooth image
     medianBlur(src, src, 9);
     //apply threshold
-    threshold(src, src, 5, 255, CV_THRESH_BINARY);
+    threshold(src, src, 20, 255, CV_THRESH_BINARY);
 
     vector<vector<Point> > contour = getContour(src);
     vector<float> fourier;
@@ -111,7 +111,6 @@ void fourier_loader::writeDescriptorToFile(string filename){
         for(size_t gesture = 0; gesture < fourier[folder].size(); gesture++){
             for(size_t imgNum = 0; imgNum < fourier[folder][gesture].size(); imgNum++){
                 for(size_t dscrpt = 0; dscrpt < fourier[folder][gesture][imgNum].size(); dscrpt++){
-                    cout << " size " << fourier[folder][gesture][imgNum].size() << endl;
                     if(dscrpt == 0){
                         myfile << gesture << ",";
                     }else if(dscrpt != fourier[folder][gesture][imgNum].size() - 1){
@@ -128,10 +127,6 @@ void fourier_loader::writeDescriptorToFile(string filename){
 }
 
 vector<vector<Point> > fourier_loader::getContour(Mat &src){
-        //apply a median blur to smooth image
-        //medianBlur(src, src, 9);
-        //apply threshold
-        //threshold(src, src, 5, 255, CV_THRESH_BINARY);
         //find contours
         vector<vector<Point> > contours;
         findContours(src, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);

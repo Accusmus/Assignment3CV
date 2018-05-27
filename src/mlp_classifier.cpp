@@ -157,10 +157,7 @@ static float classifier_predict(string filename_to_load, Mat &sample)
         cout << "error: model empty" << endl;
         exit(1);
     }
-        //ntrain_samples = 0;
-
     float r = model->predict( sample );
-
     return r;
 }
 

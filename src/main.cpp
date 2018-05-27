@@ -68,12 +68,12 @@ int main(int argc, char **argv)
 
     }else if(argc == 3){
         //create a descriptor file
-
-        string filename = "descriptor.txt";
+        cout << "create descriptor file" << endl;
+        string filename = "descriptor2.txt";
 
         fourier_loader loader = fourier_loader();
 
-        //loader.readFiles();
+        loader.readFiles();
         loader.getBulkFourierDescriptor();
         loader.writeDescriptorToFile(filename);
 
@@ -124,17 +124,24 @@ int main(int argc, char **argv)
 
             vector<float> fourier = loader.getSingleFourierDescriptor(originalImage, drawing);
             if(!fourier.empty()){
-                Mat sample1 = (Mat_<float>(1,9) << fourier[1],fourier[2],fourier[3],fourier[4], fourier[5],fourier[6],fourier[7], fourier[8], fourier[9]);
+                //Mat sample1 = (Mat_<float>(1,9) << fourier[1],fourier[2],fourier[3],fourier[4], fourier[5],fourier[6],fourier[7], fourier[8], fourier[9]);
+                Mat sample1 = (Mat_<float>(1,29) << fourier[1],fourier[2],fourier[3],fourier[4],
+                                                    fourier[5],fourier[6],fourier[7], fourier[8],
+                                                    fourier[9],fourier[10],fourier[11],fourier[12],
+                                                    fourier[13],fourier[14],fourier[15],fourier[16],
+                                                    fourier[17],fourier[18],fourier[19],fourier[20],
+                                                    fourier[21],fourier[22],fourier[23],fourier[24],
+                                                    fourier[25],fourier[26],fourier[27],fourier[28],fourier[29]);
 
-                string data = "res/classifier/descriptor.txt";
-                string save = "res/classifier/example.xml";
-                string load = "res/classifier/example.xml";
+                string data = "res/classifier/descriptor2.txt";
+                string save = "res/classifier/example2.xml";
+                string load = "res/classifier/example2.xml";
                 mlp_classifier classifier = mlp_classifier(data, save, load);
                 float gesture = classifier.getClassifierResult(sample1);
                 cout << "gesture: " << gesture << endl;
             }
 
-            imshow("WebCam", originalImage);
+            imshow("WebCam", drawing);
 
             //if key is pressed then exit program
             key=waitKey(1);
