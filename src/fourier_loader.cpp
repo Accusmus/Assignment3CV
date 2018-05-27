@@ -61,13 +61,12 @@ vector<float> fourier_loader::getSingleFourierDescriptor(Mat &src, Mat &drawing)
     threshold(src, src, 5, 255, CV_THRESH_BINARY);
 
     vector<vector<Point> > contour = getContour(src);
-
-    Scalar color = CV_RGB(0, 255, 0);
-    drawContours(drawing, contour, 0, color, 1, 8);
-
     vector<float> fourier;
-    ellipticFourierDescriptors(contour[0], fourier);
-
+    if(!contour.empty()){
+        Scalar color = CV_RGB(0, 255, 0);
+        drawContours(drawing, contour, 0, color, 1, 8);
+        ellipticFourierDescriptors(contour[0], fourier);
+    }
     return fourier;
 }
 
@@ -130,25 +129,25 @@ void fourier_loader::writeDescriptorToFile(string filename){
 
 vector<vector<Point> > fourier_loader::getContour(Mat &src){
         //apply a median blur to smooth image
-        medianBlur(src, src, 9);
+        //medianBlur(src, src, 9);
         //apply threshold
-        threshold(src, src, 5, 255, CV_THRESH_BINARY);
+        //threshold(src, src, 5, 255, CV_THRESH_BINARY);
         //find contours
-
         vector<vector<Point> > contours;
         findContours(src, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-
-        int largestcontour = 0;
-        long int largestsize = 0;
-
-        for(size_t i = 0; i < contours.size(); i++){
-            if(largestsize < contours[i].size()){
-                largestsize = contours[i].size();
-                largestcontour = i;
-            }
-        }
         vector<vector<Point> > ret;
-        ret.push_back(contours[largestcontour]);
+        if(!contours.empty()){
+            int largestcontour = 0;
+            long int largestsize = 0;
+
+            for(size_t i = 0; i < contours.size(); i++){
+                if(largestsize < contours[i].size()){
+                    largestsize = contours[i].size();
+                    largestcontour = i;
+                }
+            }
+            ret.push_back(contours[largestcontour]);
+        }
         return ret;
 }
 

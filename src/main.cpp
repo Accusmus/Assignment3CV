@@ -123,10 +123,7 @@ int main(int argc, char **argv)
             fourier_loader loader = fourier_loader();
 
             vector<float> fourier = loader.getSingleFourierDescriptor(originalImage, drawing);
-            if(fourier.data() == NULL){
-                cout << "No fourier" << endl;
-                continue;
-            }else{
+            if(!fourier.empty()){
                 Mat sample1 = (Mat_<float>(1,9) << fourier[1],fourier[2],fourier[3],fourier[4], fourier[5],fourier[6],fourier[7], fourier[8], fourier[9]);
 
                 string data = "res/classifier/descriptor.txt";
@@ -135,20 +132,20 @@ int main(int argc, char **argv)
                 mlp_classifier classifier = mlp_classifier(data, save, load);
                 float gesture = classifier.getClassifierResult(sample1);
                 cout << "gesture: " << gesture << endl;
-
-                imshow("WebCam", originalImage);
-
-                //if key is pressed then exit program
-                key=waitKey(1);
-                if(key==113 || key==27) return 0;//either esc or 'q'
-
-                //finish of finding the time
-                system_clock::time_point end = system_clock::now();
-                double seconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-                fps = 1000000/seconds;
-
-                cout << "frames " << fps << " seconds " << seconds << endl;
             }
+
+            imshow("WebCam", originalImage);
+
+            //if key is pressed then exit program
+            key=waitKey(1);
+            if(key==113 || key==27) return 0;//either esc or 'q'
+
+            //finish of finding the time
+            system_clock::time_point end = system_clock::now();
+            double seconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+            fps = 1000000/seconds;
+
+            cout << "frames " << fps << " seconds " << seconds << endl;
         }
 
     }
