@@ -26,17 +26,24 @@ int main(int argc, char **argv)
         Mat src;
         Mat image;
         Mat drawing;
+        Mat color;
 
         //create windows for displaying
         namedWindow("original", 0);
         namedWindow("processed", 0);
         namedWindow("contours", 0);
+        namedWindow("result", 0);
 
         resizeWindow("original", Size(500,500));
         resizeWindow("processed", Size(500,500));
         resizeWindow("contours", Size(500,500));
+        resizeWindow("result", Size(500, 500));
 
         src = imread(argv[1], CV_8UC1);
+
+        color.create(src.size(), CV_8UC3);
+        cvtColor(src, color, CV_GRAY2BGR);
+        resize(color, color, Size(640,480),0,0, INTER_LINEAR);
 
         image = src;
 
@@ -56,12 +63,13 @@ int main(int argc, char **argv)
         char str[20];
         int gestureNum = (int)gesture;
         sprintf(str, "%d", gestureNum);
-        putText(image, str, Point2f(280, 240), FONT_HERSHEY_PLAIN, 4, Scalar(0, 0, 255, 255), 4);
+        putText(color, str, Point2f(570, 400), FONT_HERSHEY_PLAIN, 4, Scalar(0, 0, 255, 255), 4);
 
 
         imshow("contours", drawing);
         imshow("original", src);
         imshow("processed", image);
+        imshow("result", color);
 
         waitKey(0);
         return 0;
