@@ -40,6 +40,10 @@ int main(int argc, char **argv)
         resizeWindow("result", Size(500, 500));
 
         src = imread(argv[1], CV_8UC1);
+        if(!src.data){
+            cout << "Error: File not found" << endl;
+            exit(1);
+        }
 
         color.create(src.size(), CV_8UC3);
         cvtColor(src, color, CV_GRAY2BGR);
@@ -49,13 +53,19 @@ int main(int argc, char **argv)
 
         fourier_loader loader = fourier_loader();
 
-        vector<float> fourier = loader.getSingleFourierDescriptor(image, drawing);
+        vector<float> fourier = loader.getSingleFourierDescriptor(image, drawing, 5);
 
-        Mat sample1 = (Mat_<float>(1,9) << fourier[1],fourier[2],fourier[3],fourier[4], fourier[5],fourier[6],fourier[7], fourier[8], fourier[9]);
+        Mat sample1 = (Mat_<float>(1,29) << fourier[1],fourier[2],fourier[3],fourier[4],
+                                                    fourier[5],fourier[6],fourier[7], fourier[8],
+                                                    fourier[9],fourier[10],fourier[11],fourier[12],
+                                                    fourier[13],fourier[14],fourier[15],fourier[16],
+                                                    fourier[17],fourier[18],fourier[19],fourier[20],
+                                                    fourier[21],fourier[22],fourier[23],fourier[24],
+                                                    fourier[25],fourier[26],fourier[27],fourier[28],fourier[29]);
 
-        string data = "res/classifier/descriptor.txt";
-        string save = "res/classifier/example.xml";
-        string load = "res/classifier/example.xml";
+        string data = "res/classifier/descriptor2.txt";
+        string save = "res/classifier/example2.xml";
+        string load = "res/classifier/example2.xml";
         mlp_classifier classifier = mlp_classifier(data, save, load);
         float gesture = classifier.getClassifierResult(sample1);
         cout << "gesture: " << gesture << endl;
@@ -75,6 +85,7 @@ int main(int argc, char **argv)
         return 0;
 
     }else if(argc == 3){
+        //read all training images
         //create a descriptor file
         cout << "create descriptor file" << endl;
         string filename = "descriptor2.txt";
@@ -90,9 +101,8 @@ int main(int argc, char **argv)
         cout << "Info: Interperate camera input." << endl;
 
         Mat frame;          //Image from camera
-        Mat originalImage;  //grey image from camera this is modified after median filter
         Mat processedImage; //resulting processed image
-        Mat drawing;
+        Mat drawing;        //contour image
 
         VideoCapture cap;
         cap.open(0);
@@ -104,7 +114,8 @@ int main(int argc, char **argv)
         cout << "Opened camera" << endl;
 
         // Create window to display images
-        namedWindow("WebCam", 1);
+        namedWindow("Contour", 1);
+        namedWindow("Processed", 1);
 
         cap.set(CV_CAP_PROP_FRAME_WIDTH, 640);
         cap.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
@@ -112,7 +123,7 @@ int main(int argc, char **argv)
         // read camera output to matrices
         cap >> frame;
 
-        cvtColor(frame, originalImage, COLOR_RGB2GRAY);
+        cvtColor(frame, processedImage, COLOR_RGB2GRAY);
 
         int key=0;
 
@@ -126,11 +137,12 @@ int main(int argc, char **argv)
                 break;
             }
 
-            cvtColor(frame, originalImage, COLOR_RGB2GRAY);
+            cvtColor(frame, processedImage, COLOR_RGB2GRAY);
 
             fourier_loader loader = fourier_loader();
 
-            vector<float> fourier = loader.getSingleFourierDescriptor(originalImage, drawing);
+            vector<float> fourier = loader.getSingleFourierDescriptor(processedImage, drawing, 100);
+            float gesture = -1;
             if(!fourier.empty()){
                 //Mat sample1 = (Mat_<float>(1,9) << fourier[1],fourier[2],fourier[3],fourier[4], fourier[5],fourier[6],fourier[7], fourier[8], fourier[9]);
                 Mat sample1 = (Mat_<float>(1,29) << fourier[1],fourier[2],fourier[3],fourier[4],
@@ -145,11 +157,17 @@ int main(int argc, char **argv)
                 string save = "res/classifier/example2.xml";
                 string load = "res/classifier/example2.xml";
                 mlp_classifier classifier = mlp_classifier(data, save, load);
-                float gesture = classifier.getClassifierResult(sample1);
+                gesture = classifier.getClassifierResult(sample1);
                 cout << "gesture: " << gesture << endl;
             }
 
-            imshow("WebCam", drawing);
+            char str[20];
+            int gestureNum = (int)gesture;
+            sprintf(str, "%d", gestureNum);
+            putText(drawing, str, Point2f(570, 400), FONT_HERSHEY_PLAIN, 4, Scalar(0, 0, 255, 255), 4);
+
+            imshow("Contour", drawing);
+            imshow("Processed", frame);
 
             //if key is pressed then exit program
             key=waitKey(1);

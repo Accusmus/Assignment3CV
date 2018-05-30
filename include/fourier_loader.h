@@ -22,7 +22,7 @@ class fourier_loader
 
         void readFiles();
         void getBulkFourierDescriptor();
-        vector<float> getSingleFourierDescriptor(Mat &src, Mat &drawing);
+        vector<float> getSingleFourierDescriptor(Mat &src, Mat &drawing, int thresh);
         void writeDescriptorToFile(string filename);
 
         void getImages(vector<vector<vector<Mat> > > &imgs);

@@ -19,7 +19,7 @@ static const string foldernames[] = {
 };
 
 static const string handtypes[] = {
-    "0*","1*","2*","3*","4*","5*","6*","7*","8*","9*",
+    "0*","1*","2*","3*","4*","5*","6*","7*","8*","9*","a*","b*", "c*", "d*", "e*", "f*", "g*", "h*", "i*", "j*", "k*", "l*","m*","n*","o*","p*","q*", "r*", "s*", "t*", "u*", "v*", "w*", "x*", "y*", "z*"
 };
 
 //initialises and reads all files to vector of vectors of mats
@@ -30,7 +30,7 @@ void fourier_loader::readFiles(){
         vector<vector<Mat> > fn;
         images.push_back(fn);
 
-        for(size_t handtype = 0; handtype < 10; handtype++){
+        for(size_t handtype = 0; handtype < 36; handtype++){
             vector<Mat> ht;
             images[foldernum].push_back(ht);
 
@@ -52,7 +52,7 @@ void fourier_loader::readFiles(){
     }
 }
 
-vector<float> fourier_loader::getSingleFourierDescriptor(Mat &src, Mat &drawing){
+vector<float> fourier_loader::getSingleFourierDescriptor(Mat &src, Mat &drawing, int thresh){
     resize(src, src, Size(640, 480), 0, 0, INTER_LINEAR);
     drawing = Mat::zeros(src.size(), CV_8UC3);
     //apply a median blur to smooth image

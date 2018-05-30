@@ -167,7 +167,7 @@ build_mlp_classifier( const string& data_filename,
                       const string& filename_to_save,
                       const string& filename_to_load )
 {
-    const int class_count = 10;//CLASSES
+    const int class_count = 36;//CLASSES
     Mat data;
     Mat responses;
 
