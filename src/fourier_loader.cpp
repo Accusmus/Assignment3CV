@@ -10,7 +10,7 @@ fourier_loader::~fourier_loader()
     //dtor
 }
 
-static const string foldernames[] = {
+static const vector<string> foldernames = {
     "res/part1/hand1_",
     "res/part2/hand2_",
     "res/part3/hand3_",
@@ -18,25 +18,30 @@ static const string foldernames[] = {
     "res/part5/hand5_",
 };
 
-static const string handtypes[] = {
+static const vector<string> handtypes = {
     "0*","1*","2*","3*","4*","5*","6*","7*","8*","9*","a*","b*", "c*", "d*", "e*", "f*", "g*", "h*", "i*", "j*", "k*", "l*","m*","n*","o*","p*","q*", "r*", "s*", "t*", "u*", "v*", "w*", "x*", "y*", "z*"
 };
 
 //initialises and reads all files to vector of vectors of mats
 void fourier_loader::readFiles(){
+    //vector to hold all of the filenames
     vector<String> filenames;
 
-    for(size_t foldernum = 0; foldernum < 5; foldernum++){
+    //loop through each of the folders
+    for(size_t foldernum = 0; foldernum < foldernames.size(); foldernum++){
         vector<vector<Mat> > fn;
         images.push_back(fn);
 
-        for(size_t handtype = 0; handtype < 36; handtype++){
+        //loop through each gesture type
+        for(size_t handtype = 0; handtype < handtypes.size(); handtype++){
             vector<Mat> ht;
             images[foldernum].push_back(ht);
 
+            //use glob to find the filenames
             string path = foldernames[foldernum] + handtypes[handtype];
             glob(path, filenames, true);
 
+            //loop through each image of the gesture in that folder
             for(size_t i = 0; i < filenames.size(); i++){
                 Mat image;
                 image = cv::imread(filenames[i], CV_8UC1);
@@ -44,11 +49,12 @@ void fourier_loader::readFiles(){
                     cout << "Error: no such file" << endl;
                     exit(1);
                 }
+                //load images into memeory
                 images[foldernum][handtype].push_back(image);
                 cout << "img: " << filenames[i] << endl;
             }
         }
-        cout << "Folder part" << foldernum << " loaded successfully" << endl;
+        cout << "Folder part:" << foldernames[foldernum] << " loaded successfully" << endl;
     }
 }
 
@@ -72,20 +78,29 @@ vector<float> fourier_loader::getSingleFourierDescriptor(Mat &src, Mat &drawing,
 
 void fourier_loader::getBulkFourierDescriptor(){
     //takes images and returns fourier descriptors
+
+    //for each folder
     for(size_t i = 0; i < images.size(); i++){ // for each hand num (folder)
         vector<vector<Mat> > folder;
         drawings.push_back(folder);
         vector<vector<vector<float> > > ceFolder;
         fourier.push_back(ceFolder);
 
-        for(size_t j = 0; j < images[i].size(); j++){ //for each hand sign
+        //for each gesture
+        for(size_t j = 0; j < images[i].size(); j++){
             vector<Mat> hand;
             drawings[i].push_back(hand);
             vector<vector<float> >ceHand;
             fourier[i].push_back(ceHand);
 
+            //for each image
             for(size_t k = 0; k < images[i][j].size(); k++){ //for each image
                 resize(images[i][j][k], images[i][j][k], Size(640, 480), 0, 0, INTER_LINEAR);
+                //apply a median blur to smooth image
+                medianBlur(images[i][j][k], images[i][j][k], 9);
+                //apply threshold
+                threshold(images[i][j][k], images[i][j][k], 5, 255, CV_THRESH_BINARY);
+
                 drawings[i][j].push_back(Mat::zeros(images[i][j][k].size(), CV_8UC3));
 
 
@@ -98,12 +113,15 @@ void fourier_loader::getBulkFourierDescriptor(){
                 fourier[i][j].push_back(ceImage);
                 ellipticFourierDescriptors(contour[0], fourier[i][j][k]);
             }
+            cout << "Descriptors for Gesture " << handtypes[j] << " in folder " << foldernames[i] << " calculated" << endl;
         }
-        cout << "Descriptors for hand " << i << " calculated" << endl;
     }
 }
 
 void fourier_loader::writeDescriptorToFile(string filename){
+    const char gestureTable1[] = {
+        '0', '1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+    };
     ofstream myfile;
     myfile.open(filename);
 
@@ -112,7 +130,7 @@ void fourier_loader::writeDescriptorToFile(string filename){
             for(size_t imgNum = 0; imgNum < fourier[folder][gesture].size(); imgNum++){
                 for(size_t dscrpt = 0; dscrpt < fourier[folder][gesture][imgNum].size(); dscrpt++){
                     if(dscrpt == 0){
-                        myfile << gesture << ",";
+                        myfile << gestureTable1[gesture] << ",";
                     }else if(dscrpt != fourier[folder][gesture][imgNum].size() - 1){
                         myfile << fourier[folder][gesture][imgNum][dscrpt] << ",";
                     }else{
@@ -184,4 +202,12 @@ void fourier_loader::getImages(vector<vector<vector<Mat> > > &imgs){
 
 void fourier_loader::getContourImages(vector<vector<vector<Mat> > > &contourImg){
     contourImg = drawings;
+}
+
+vector<vector<vector<vector<float> > > > fourier_loader::getAllFourierDescriptors(){
+    return fourier;
+}
+
+Mat fourier_loader::getImage(int folder, int gesture, int img){
+    return images[folder][gesture][img];
 }

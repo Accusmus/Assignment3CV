@@ -169,7 +169,7 @@ build_mlp_classifier( const string& data_filename,
                       const string& filename_to_load,
                       Mat & sample, float &prediction)
 {
-    const int class_count = 10;//CLASSES
+    const int class_count = 36;//CLASSES
     Mat data;
     Mat responses;
 
@@ -245,7 +245,6 @@ build_mlp_classifier( const string& data_filename,
 
     //test_and_save_classifier(model, data, responses, ntrain_samples, 'A', filename_to_save);
     test_and_save_classifier(model, data, responses, ntrain_samples, 0, filename_to_save);
-    //classifier_predict(model, data, sample);
     return true;
 }
 

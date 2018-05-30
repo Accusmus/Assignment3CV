@@ -167,7 +167,7 @@ build_mlp_classifier( const string& data_filename,
                       const string& filename_to_save,
                       const string& filename_to_load )
 {
-    const int class_count = 36;//CLASSES
+    const int class_count = 35;//CLASSES
     Mat data;
     Mat responses;
 
@@ -208,12 +208,13 @@ build_mlp_classifier( const string& data_filename,
         for( int i = 0; i < ntrain_samples; i++ )
         {
             int cls_label = responses.at<int>(i) - 48;// - 'A'; //change to numerical classes, still they read as chars
-            cout << "labels " << cls_label << endl;
+            cout << "labels " << cls_label << " " << (char)(cls_label + 48) << endl;
             train_responses.at<float>(i, cls_label) = 1.f;
         }
 
         // 2. train classifier
-        int layer_sz[] = { data.cols, 500, 500, class_count };
+        int layer_sz[] = { data.cols, 200, 200, class_count }; //optimal so far
+        //int layer_sz[] = { data.cols, 100, 100, class_count };
 	cout <<  " sizeof layer_sz " << sizeof(layer_sz) << " sizeof layer_sz[0]) " << sizeof(layer_sz[0]) << endl;
         int nlayers = (int)(sizeof(layer_sz)/sizeof(layer_sz[0]));
 	cout << " nlayers  " << nlayers << endl;
@@ -221,8 +222,8 @@ build_mlp_classifier( const string& data_filename,
 
 #if 1
         int method = ANN_MLP::BACKPROP;
-        double method_param = 0.001;
-        int max_iter = 300;
+        double method_param = 0.001;//0.001
+        int max_iter = 1000;//300
 #else
         int method = ANN_MLP::RPROP;
         double method_param = 0.1;
@@ -241,8 +242,8 @@ build_mlp_classifier( const string& data_filename,
         cout << endl;
     }
 
-    //test_and_save_classifier(model, data, responses, ntrain_samples, 'A', filename_to_save);
-    test_and_save_classifier(model, data, responses, ntrain_samples, 0, filename_to_save);
+    test_and_save_classifier(model, data, responses, ntrain_samples, 'A', filename_to_save);
+    //test_and_save_classifier(model, data, responses, ntrain_samples, 0, filename_to_save);
     return true;
 }
 

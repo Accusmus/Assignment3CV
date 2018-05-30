@@ -19,6 +19,10 @@ using namespace chrono;
 
 int main(int argc, char **argv)
 {
+
+    const char gestureTable[] = {
+        '0', '1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'
+    };
     //Single Image
     if(argc == 2)
     {
@@ -63,16 +67,16 @@ int main(int argc, char **argv)
                                                     fourier[21],fourier[22],fourier[23],fourier[24],
                                                     fourier[25],fourier[26],fourier[27],fourier[28],fourier[29]);
 
-        string data = "res/classifier/descriptor2.txt";
-        string save = "res/classifier/example2.xml";
-        string load = "res/classifier/example2.xml";
+        string data = "res/classifier/all.txt";
+        string save = "res/classifier/all.xml";
+        string load = "res/classifier/all.xml";
         mlp_classifier classifier = mlp_classifier(data, save, load);
         float gesture = classifier.getClassifierResult(sample1);
         cout << "gesture: " << gesture << endl;
 
         char str[20];
         int gestureNum = (int)gesture;
-        sprintf(str, "%d", gestureNum);
+        sprintf(str, "%c", gestureTable[gestureNum]);
         putText(color, str, Point2f(570, 400), FONT_HERSHEY_PLAIN, 4, Scalar(0, 0, 255, 255), 4);
 
 
@@ -85,16 +89,51 @@ int main(int argc, char **argv)
         return 0;
 
     }else if(argc == 3){
-        //read all training images
-        //create a descriptor file
-        cout << "create descriptor file" << endl;
-        string filename = "descriptor2.txt";
+//        //read all training images
+//        //create a descriptor file
+//        cout << "create descriptor file" << endl;
+//        string filename = "descriptor2.txt";
+//
+//        fourier_loader loader = fourier_loader();
+//
+//        loader.readFiles();
+//        loader.getBulkFourierDescriptor();
+//        loader.writeDescriptorToFile(filename);
+
 
         fourier_loader loader = fourier_loader();
-
         loader.readFiles();
         loader.getBulkFourierDescriptor();
-        loader.writeDescriptorToFile(filename);
+
+        string data = "res/classifier/all.txt";
+        string save = "res/classifier/all.xml";
+        string load = "res/classifier/all.xml";
+        mlp_classifier classifier = mlp_classifier(data, save, load);
+        vector<vector<vector<vector<float> > > > fourier = loader.getAllFourierDescriptors();
+        int count = 0, correct = 0;
+        for(int i = 0; i < fourier.size(); i++){
+            for(int j = 0; j < fourier[i].size(); j++){
+                for(int k = 0; k < fourier[i][j].size(); k++){
+                    count ++;
+                    cout << "actual: " << j << " ";
+                    Mat sample1 = (Mat_<float>(1,29) << fourier[i][j][k][1],fourier[i][j][k][2],fourier[i][j][k][3],fourier[i][j][k][4],
+                                                    fourier[i][j][k][5],fourier[i][j][k][6],fourier[i][j][k][7], fourier[i][j][k][8],
+                                                    fourier[i][j][k][9],fourier[i][j][k][10],fourier[i][j][k][11],fourier[i][j][k][12],
+                                                    fourier[i][j][k][13],fourier[i][j][k][14],fourier[i][j][k][15],fourier[i][j][k][16],
+                                                    fourier[i][j][k][17],fourier[i][j][k][18],fourier[i][j][k][19],fourier[i][j][k][20],
+                                                    fourier[i][j][k][21],fourier[i][j][k][22],fourier[i][j][k][23],fourier[i][j][k][24],
+                                                    fourier[i][j][k][25],fourier[i][j][k][26],fourier[i][j][k][27],fourier[i][j][k][28],fourier[i][j][k][29]);
+
+                    float gesture = classifier.getClassifierResult(sample1);
+                    if(gesture >= 10) gesture -= 6;
+                    if(gesture == j) correct++;
+                    cout << " predicted: " << gesture << endl;
+                }
+            }
+        }
+        cout << "correct: " << correct  << "/" << count << endl;
+
+
 
     //Camera Input
     }else{
