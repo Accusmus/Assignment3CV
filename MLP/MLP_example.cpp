@@ -167,7 +167,7 @@ build_mlp_classifier( const string& data_filename,
                       const string& filename_to_save,
                       const string& filename_to_load )
 {
-    const int class_count = 35;//CLASSES
+    const int class_count = 43;//CLASSES
     Mat data;
     Mat responses;
 
@@ -213,7 +213,7 @@ build_mlp_classifier( const string& data_filename,
         }
 
         // 2. train classifier
-        int layer_sz[] = { data.cols, 200, 200, class_count }; //optimal so far
+        int layer_sz[] = { data.cols, 70, 70, class_count }; //optimal so far
         //int layer_sz[] = { data.cols, 100, 100, class_count };
 	cout <<  " sizeof layer_sz " << sizeof(layer_sz) << " sizeof layer_sz[0]) " << sizeof(layer_sz[0]) << endl;
         int nlayers = (int)(sizeof(layer_sz)/sizeof(layer_sz[0]));
@@ -223,7 +223,7 @@ build_mlp_classifier( const string& data_filename,
 #if 1
         int method = ANN_MLP::BACKPROP;
         double method_param = 0.001;//0.001
-        int max_iter = 1000;//300
+        int max_iter = 10000;//300
 #else
         int method = ANN_MLP::RPROP;
         double method_param = 0.1;

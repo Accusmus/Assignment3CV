@@ -72,6 +72,7 @@ int main(int argc, char **argv)
         string load = "res/classifier/all.xml";
         mlp_classifier classifier = mlp_classifier(data, save, load);
         float gesture = classifier.getClassifierResult(sample1);
+        if(gesture >= 10) gesture -= 7;
         cout << "gesture: " << gesture << endl;
 
         char str[20];
@@ -89,33 +90,45 @@ int main(int argc, char **argv)
         return 0;
 
     }else if(argc == 3){
-//        //read all training images
-//        //create a descriptor file
-//        cout << "create descriptor file" << endl;
-//        string filename = "descriptor2.txt";
-//
-//        fourier_loader loader = fourier_loader();
-//
-//        loader.readFiles();
-//        loader.getBulkFourierDescriptor();
-//        loader.writeDescriptorToFile(filename);
 
+//set to 1 to write a descriptor file
+//set to 0 to test all the images
+#if 0
+        //read all training images
+        //create a descriptor file
+        cout << "create descriptor file" << endl;
+        string filename = "descriptor2.txt";
 
+        fourier_loader loader = fourier_loader();
+
+        loader.readFiles();
+        loader.getBulkFourierDescriptor();
+        loader.writeDescriptorToFile(filename);
+
+#else
+        //read all files and get descriptor for all of them
         fourier_loader loader = fourier_loader();
         loader.readFiles();
         loader.getBulkFourierDescriptor();
 
+        //load the classifier with xml file
         string data = "res/classifier/all.txt";
         string save = "res/classifier/all.xml";
         string load = "res/classifier/all.xml";
         mlp_classifier classifier = mlp_classifier(data, save, load);
         vector<vector<vector<vector<float> > > > fourier = loader.getAllFourierDescriptors();
-        int count = 0, correct = 0;
+
+        //set the counts to zero
+        int countgesture[36], correctgesture[36];
+        for(int i = 0; i < 36; i++) {
+            countgesture[i] = 0;
+            correctgesture[i] = 0;
+        }
+        //run through each image and check if it was predicted correctly
         for(int i = 0; i < fourier.size(); i++){
             for(int j = 0; j < fourier[i].size(); j++){
                 for(int k = 0; k < fourier[i][j].size(); k++){
-                    count ++;
-                    cout << "actual: " << j << " ";
+                    countgesture[j] ++;
                     Mat sample1 = (Mat_<float>(1,29) << fourier[i][j][k][1],fourier[i][j][k][2],fourier[i][j][k][3],fourier[i][j][k][4],
                                                     fourier[i][j][k][5],fourier[i][j][k][6],fourier[i][j][k][7], fourier[i][j][k][8],
                                                     fourier[i][j][k][9],fourier[i][j][k][10],fourier[i][j][k][11],fourier[i][j][k][12],
@@ -125,13 +138,20 @@ int main(int argc, char **argv)
                                                     fourier[i][j][k][25],fourier[i][j][k][26],fourier[i][j][k][27],fourier[i][j][k][28],fourier[i][j][k][29]);
 
                     float gesture = classifier.getClassifierResult(sample1);
-                    if(gesture >= 10) gesture -= 6;
-                    if(gesture == j) correct++;
-                    cout << " predicted: " << gesture << endl;
+                    if(gesture >= 10) gesture -= 7;
+                    if(gesture == j){
+                        correctgesture[j] ++;
+                    }
                 }
             }
         }
-        cout << "correct: " << correct  << "/" << count << endl;
+        //print out results
+        for(int i = 0; i < 36; i++){
+            cout << "Gesture " << gestureTable[i] << " correct: (" << correctgesture[i]  << "/" << countgesture[i];
+            double percent = correctgesture[i] * 100 / countgesture[i];
+            cout << ") Percent: " << percent << "\%" << endl;
+        }
+#endif
 
 
 
