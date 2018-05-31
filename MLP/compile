@@ -1,3 +1,0 @@
-#!/bin/bash
-
-g++ -o MLP_example MLP_example.cpp `pkg-config --libs --cflags opencv`
