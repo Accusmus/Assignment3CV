@@ -28,6 +28,8 @@ using namespace chrono;
 
 //program is capable of testing all 5 gesture folders provided on stream
 
+//git repository is https://github.com/Accusmus/Assignment3CV.git
+
 #define TEST_OR_CREATE 0
 
 int main(int argc, char **argv)
