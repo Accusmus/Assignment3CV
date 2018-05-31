@@ -17,6 +17,19 @@ using namespace std;
 using namespace cv;
 using namespace chrono;
 
+//Assignment 3
+//Matthew Crankshaw
+//ID: 14303742
+
+//to load single image just provide image path as arguement to program
+//to load camera please provide no arguements to program and change camera settings so that hand is centure of attention in frame with dark background
+//to test classifier provide 2 random arguements and set TEST_OR_CREATE to 0
+//to create  a fourier descriptor provide 2 random arguements and set TEST_OR_CREATE to 1
+
+//program is capable of testing all 5 gesture folders provided on stream
+
+#define TEST_OR_CREATE 0
+
 int main(int argc, char **argv)
 {
     //gesture table for each type of gesture
@@ -93,7 +106,7 @@ int main(int argc, char **argv)
 
 //set to 1 to write a descriptor file
 //set to 0 to test all the images
-#if 0
+#if TEST_OR_CREATE
         //read all training images
         //create a descriptor file
         cout << "create descriptor file" << endl;
@@ -125,9 +138,9 @@ int main(int argc, char **argv)
             correctgesture[i] = 0;
         }
         //run through each image and check if it was predicted correctly
-        for(int i = 0; i < fourier.size(); i++){
-            for(int j = 0; j < fourier[i].size(); j++){
-                for(int k = 0; k < fourier[i][j].size(); k++){
+        for(size_t i = 0; i < fourier.size(); i++){
+            for(size_t j = 0; j < fourier[i].size(); j++){
+                for(size_t k = 0; k < fourier[i][j].size(); k++){
                     countgesture[j] ++;
                     Mat sample1 = (Mat_<float>(1,29) << fourier[i][j][k][1],fourier[i][j][k][2],fourier[i][j][k][3],fourier[i][j][k][4],
                                                     fourier[i][j][k][5],fourier[i][j][k][6],fourier[i][j][k][7], fourier[i][j][k][8],

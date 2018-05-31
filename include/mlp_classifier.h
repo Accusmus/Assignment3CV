@@ -19,6 +19,8 @@ class mlp_classifier
         virtual ~mlp_classifier();
 
         float getClassifierResult(Mat &sample);
+        bool build_mlp_classifier( const string& data_filename, const string& filename_to_save, const string& filename_to_load);
+        float classifier_predict(string filename_to_load, Mat &sample);
 
     protected:
 
