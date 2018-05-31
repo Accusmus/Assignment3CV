@@ -28,7 +28,6 @@ class fourier_loader
         void getImages(vector<vector<vector<Mat> > > &imgs);
         void getContourImages(vector<vector<vector<Mat> > > &contourImg);
         vector<vector<vector<vector<float> > > > getAllFourierDescriptors();
-        Mat getImage(int folder, int gesture, int img);
     protected:
 
     private:

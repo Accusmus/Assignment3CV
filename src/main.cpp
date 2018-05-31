@@ -19,7 +19,7 @@ using namespace chrono;
 
 int main(int argc, char **argv)
 {
-
+    //gesture table for each type of gesture
     const char gestureTable[] = {
         '0', '1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'
     };
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
         //read all training images
         //create a descriptor file
         cout << "create descriptor file" << endl;
-        string filename = "descriptor2.txt";
+        string filename = "descriptor.txt";
 
         fourier_loader loader = fourier_loader();
 
@@ -194,12 +194,14 @@ int main(int argc, char **argv)
                 break;
             }
 
+            //convert image to gray
             cvtColor(frame, processedImage, COLOR_RGB2GRAY);
 
             fourier_loader loader = fourier_loader();
-
+            //load a single image and get the fourier descriptor for it
             vector<float> fourier = loader.getSingleFourierDescriptor(processedImage, drawing, 100);
             float gesture = -1;
+            //make sure that if no fourier is found program doesnt crash
             if(!fourier.empty()){
                 //Mat sample1 = (Mat_<float>(1,9) << fourier[1],fourier[2],fourier[3],fourier[4], fourier[5],fourier[6],fourier[7], fourier[8], fourier[9]);
                 Mat sample1 = (Mat_<float>(1,29) << fourier[1],fourier[2],fourier[3],fourier[4],

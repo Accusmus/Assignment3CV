@@ -10,6 +10,7 @@ fourier_loader::~fourier_loader()
     //dtor
 }
 
+//all of the names of the image folders to load
 static const vector<string> foldernames = {
     "res/part1/hand1_",
     "res/part2/hand2_",
@@ -18,6 +19,7 @@ static const vector<string> foldernames = {
     "res/part5/hand5_",
 };
 
+//all of the names of the image gestures types to load
 static const vector<string> handtypes = {
     "0*","1*","2*","3*","4*","5*","6*","7*","8*","9*","a*","b*", "c*", "d*", "e*", "f*", "g*", "h*", "i*", "j*", "k*", "l*","m*","n*","o*","p*","q*", "r*", "s*", "t*", "u*", "v*", "w*", "x*", "y*", "z*"
 };
@@ -100,7 +102,7 @@ void fourier_loader::getBulkFourierDescriptor(){
                 medianBlur(images[i][j][k], images[i][j][k], 9);
                 //apply threshold
                 threshold(images[i][j][k], images[i][j][k], 5, 255, CV_THRESH_BINARY);
-
+                //create a zeroed out matrix for contour images
                 drawings[i][j].push_back(Mat::zeros(images[i][j][k].size(), CV_8UC3));
 
 
@@ -118,17 +120,30 @@ void fourier_loader::getBulkFourierDescriptor(){
     }
 }
 
+//write all of the descriptors to a file
+//Note: can only be called after getBulkDescriptor function
 void fourier_loader::writeDescriptorToFile(string filename){
     const char gestureTable1[] = {
         '0', '1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
     };
+
+    if(images.size() == 0){
+        cout << "Error: No images to process" << endl;
+        exit(1);
+    }
+
+    //create file stream
     ofstream myfile;
     myfile.open(filename);
 
+    //for each folder of images
     for(size_t folder = 0; folder < fourier.size(); folder++){
+        //for each gesure in folder
         for(size_t gesture = 0; gesture < fourier[folder].size(); gesture++){
+            // for each image in gesture
             for(size_t imgNum = 0; imgNum < fourier[folder][gesture].size(); imgNum++){
                 for(size_t dscrpt = 0; dscrpt < fourier[folder][gesture][imgNum].size(); dscrpt++){
+                    //write the descriptor for this image
                     if(dscrpt == 0){
                         myfile << gestureTable1[gesture] << ",";
                     }else if(dscrpt != fourier[folder][gesture][imgNum].size() - 1){
@@ -191,9 +206,6 @@ void fourier_loader::ellipticFourierDescriptors(vector<Point> &contour, vector<f
         CE.push_back(sqrt((ax[k]*ax[k]+ay[k]*ay[k])/(ax[0]*ax[0]+ay[0]*ay[0]))+
                         sqrt((bx[k]*bx[k]+by[k]*by[k])/(bx[0]*bx[0]+by[0]*by[0])) );
     }
-//    for(size_t count=0; count<n && count < CE.size(); count++){
-//        cout << count << " CE " << CE[count] << " ax " << ax[count] << " ay " << ay[count] << " bx " << bx[count] << " by " << by[count] << endl;
-//    }
 }
 
 void fourier_loader::getImages(vector<vector<vector<Mat> > > &imgs){
@@ -206,8 +218,4 @@ void fourier_loader::getContourImages(vector<vector<vector<Mat> > > &contourImg)
 
 vector<vector<vector<vector<float> > > > fourier_loader::getAllFourierDescriptors(){
     return fourier;
-}
-
-Mat fourier_loader::getImage(int folder, int gesture, int img){
-    return images[folder][gesture][img];
 }
