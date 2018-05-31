@@ -153,8 +153,6 @@ int main(int argc, char **argv)
         }
 #endif
 
-
-
     //Camera Input
     }else{
         cout << "Info: Interperate camera input." << endl;
@@ -212,17 +210,18 @@ int main(int argc, char **argv)
                                                     fourier[21],fourier[22],fourier[23],fourier[24],
                                                     fourier[25],fourier[26],fourier[27],fourier[28],fourier[29]);
 
-                string data = "res/classifier/descriptor2.txt";
-                string save = "res/classifier/example2.xml";
-                string load = "res/classifier/example2.xml";
+                string data = "res/classifier/all.txt";
+                string save = "res/classifier/all.xml";
+                string load = "res/classifier/all.xml";
                 mlp_classifier classifier = mlp_classifier(data, save, load);
                 gesture = classifier.getClassifierResult(sample1);
+                if(gesture >= 10) gesture -= 7;
                 cout << "gesture: " << gesture << endl;
             }
 
             char str[20];
             int gestureNum = (int)gesture;
-            sprintf(str, "%d", gestureNum);
+            sprintf(str, "%c", gestureTable[gestureNum]);
             putText(drawing, str, Point2f(570, 400), FONT_HERSHEY_PLAIN, 4, Scalar(0, 0, 255, 255), 4);
 
             imshow("Contour", drawing);
